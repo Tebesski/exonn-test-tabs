@@ -1,5 +1,6 @@
+import { useDroppable } from "@dnd-kit/core"
 import { Divider } from "@mui/material"
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 import { DataT, useTabContext } from "../context/TabContext"
 import { TabsType } from "../types/TabsType.enum"
@@ -12,6 +13,7 @@ import TabPinnedElement from "./TabPinnedElement"
 
 export default function TabContainer() {
    const { tabId } = useParams<{ tabId: string }>()
+
    const {
       activeTab,
       setActiveTab,
@@ -27,12 +29,11 @@ export default function TabContainer() {
       setPinnedTabs,
    } = useTabContext()
 
-   const [hoveredTab, setHoveredTab] = useState<number | null>(null)
+   const { isOver, setNodeRef } = useDroppable({
+      id: "droppable",
+   })
 
-   const containerRef = useRef<HTMLDivElement>(null)
-   const dropdownRef = useRef<HTMLButtonElement>(null)
-   const pinsContainerRef = useRef<HTMLDivElement>(null)
-   const tabElementRef = useRef<HTMLDivElement>(null)
+   const [hoveredTab, setHoveredTab] = useState<number | null>(null)
 
    useEffect(() => {
       const updateTabs = () => {
@@ -149,26 +150,20 @@ export default function TabContainer() {
 
    return (
       <>
-         <div className="flex w-full" ref={containerRef}>
+         <div className="flex w-full" ref={setNodeRef}>
             {pinnedTabs.length > 0 && (
-               <TabPinnedContainer ref={pinsContainerRef}>
-                  {renderPinnedTabs()}
-               </TabPinnedContainer>
+               <TabPinnedContainer>{renderPinnedTabs()}</TabPinnedContainer>
             )}
 
             {loading ? null : (
-               <div
-                  id="tab-container"
-                  className="flex w-full"
-                  ref={tabElementRef}
-               >
+               <div id="tab-container" className="flex w-full">
                   {visibleTabs.length > 0
                      ? renderTabs(visibleTabs)
                      : renderTabs(persistentData)}
                </div>
             )}
 
-            <TabDropdown ref={dropdownRef} overflowTabs={overflowTabs} />
+            <TabDropdown overflowTabs={overflowTabs} />
          </div>
 
          <TabOptionsMenu />
