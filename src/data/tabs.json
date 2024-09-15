@@ -1,0 +1,98 @@
+[
+   {
+      "name": "Dashboard",
+      "icon": "GridView",
+      "id": 1,
+      "isPinned": false
+   },
+   {
+      "name": "Accounting",
+      "icon": "PersonAdd",
+      "id": 2,
+      "isPinned": false
+   },
+   {
+      "name": "Telefonie",
+      "icon": "PhoneInTalk",
+      "id": 3,
+      "isPinned": false
+   },
+   {
+      "name": "Banking",
+      "icon": "AccountBalance",
+      "id": 4,
+      "isPinned": false
+   },
+   {
+      "name": "Verkauf",
+      "icon": "LocalConvenienceStore",
+      "id": 5,
+      "isPinned": false
+   },
+   {
+      "name": "Statistik",
+      "icon": "PieChart",
+      "id": 6,
+      "isPinned": false
+   },
+   {
+      "name": "Post Office",
+      "icon": "Mail",
+      "id": 7,
+      "isPinned": false
+   },
+   {
+      "name": "Administration",
+      "icon": "Settings",
+      "id": 8,
+      "isPinned": false
+   },
+   {
+      "name": "Help",
+      "icon": "ImportContacts",
+      "id": 9,
+      "isPinned": false
+   },
+   {
+      "name": "Warenbestand",
+      "icon": "ViewInArIcon",
+      "id": 10,
+      "isPinned": false
+   },
+   {
+      "name": "Auswahllisten",
+      "icon": "List",
+      "id": 11,
+      "isPinned": false
+   },
+   {
+      "name": "Einkauf",
+      "icon": "ShoppingCart",
+      "id": 12,
+      "isPinned": false
+   },
+   {
+      "name": "Rechn",
+      "icon": "Web",
+      "id": 13,
+      "isPinned": false
+   },
+   {
+      "name": "Verkauf",
+      "icon": "AddBox",
+      "id": 14,
+      "isPinned": false
+   },
+   {
+      "name": "Post Office",
+      "icon": "Mail",
+      "id": 15,
+      "isPinned": false
+   },
+   {
+      "name": "Telefonie",
+      "icon": "PhoneInTalk",
+      "id": 16,
+      "isPinned": false
+   }
+]
