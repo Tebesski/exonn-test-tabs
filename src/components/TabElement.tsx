@@ -34,7 +34,7 @@ export default function TabElement({
       useSortable({ id: tabId })
 
    const style = {
-      transform: CSS.Transform.toString(transform),
+      transform: CSS.Translate.toString(transform),
       transition,
    }
 
