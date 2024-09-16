@@ -51,7 +51,7 @@ const TabDropdown = forwardRef<HTMLButtonElement, TabDropdownProps>(
       const isDisabled = overflowTabs.length < 1
 
       return (
-         <div>
+         <div className="absolute right-0">
             <IconButton
                disabled={isDisabled}
                ref={ref}

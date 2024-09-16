@@ -1,3 +1,5 @@
+import { useSortable } from "@dnd-kit/sortable"
+import { CSS } from "@dnd-kit/utilities"
 import { SvgIconComponent } from "@mui/icons-material"
 import CancelIcon from "@mui/icons-material/Cancel"
 import { IconButton, Tab } from "@mui/material"
@@ -14,6 +16,7 @@ type TabElementT = {
    id: string
    onRemoveTab: () => void
    hoveredTab: number | null
+   dragStarted: boolean
 }
 
 export default function TabElement({
@@ -25,7 +28,16 @@ export default function TabElement({
    id,
    onRemoveTab,
    hoveredTab,
+   dragStarted,
 }: TabElementT) {
+   const { attributes, listeners, setNodeRef, transform, transition } =
+      useSortable({ id: tabId })
+
+   const style = {
+      transform: CSS.Translate.toString(transform),
+      transition,
+   }
+
    const { navigateToTab, handleOpenContextMenu, setContextMenuType } =
       useTabContext()
 
@@ -44,8 +56,11 @@ export default function TabElement({
    return (
       <div
          id={id}
-         className="flex items-center relative"
-         style={{ flex: "1 1 auto" }}
+         className="flex flex-auto items-center relative"
+         ref={setNodeRef}
+         style={style}
+         {...attributes}
+         {...listeners}
       >
          <Tab
             icon={<Icon sx={{ marginBottom: 0.4, fontSize: "medium" }} />}
@@ -66,6 +81,7 @@ export default function TabElement({
                   opacity: 1,
                },
                flex: "1 1 auto",
+               cursor: dragStarted ? "grabbing" : "pointer",
             }}
          />
          {isHovered && (
@@ -81,7 +97,6 @@ export default function TabElement({
                   right: 0,
                   top: "50%",
                   transform: "translateY(-50%)",
-                  paddingLeft: 0,
                   minWidth: "auto",
                   height: "48px",
                   width: "24px",
@@ -91,9 +106,9 @@ export default function TabElement({
                }}
             >
                <CancelIcon
-                  fontSize="small"
+                  fontSize="medium"
                   className="hover:text-main-red"
-                  sx={{ marginBottom: 0.4 }}
+                  sx={{ marginBottom: 0.4, paddingLeft: 1 }}
                />
             </IconButton>
          )}
