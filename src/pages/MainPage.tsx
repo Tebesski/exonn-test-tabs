@@ -1,4 +1,3 @@
-import { DndContext } from "@dnd-kit/core"
 import { Outlet } from "react-router-dom"
 import ContentBox from "../components/ContentBox"
 import TabContainer from "../components/TabContainer"
@@ -13,9 +12,7 @@ export default function MainPage() {
             overflowTabs.length > 0 ? "bg-light-gray" : "bg-white"
          }`}
       >
-         <DndContext>
-            <TabContainer />
-         </DndContext>
+         <TabContainer />
 
          {/* pages/Content */}
          <ContentBox>
