@@ -20,7 +20,7 @@ import {
    sortableKeyboardCoordinates,
 } from "@dnd-kit/sortable"
 import { Divider } from "@mui/material"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useParams } from "react-router-dom"
 import { DataT, useTabContext } from "../context/TabContext"
 import { TabsType } from "../types/TabsType.enum"
@@ -74,23 +74,51 @@ export default function TabContainer() {
 
    const [hoveredTab, setHoveredTab] = useState<number | null>(null)
    const [dragStarted, setDragStarted] = useState<boolean>(false)
+   const [containerWidth, setContainerWidth] = useState<number>(0)
+   const tabContainerRef = useRef<HTMLDivElement>()
+   const pinsContainerRef = useRef<HTMLDivElement>(null)
+   const dropdownRef = useRef<HTMLButtonElement>(null)
 
    useEffect(() => {
       const updateTabs = () => {
          if (persistentData.length) {
-            const visible = persistentData.slice(0, 13)
+            const pinnedTabs = persistentData.filter((tab) => tab.isPinned)
+            const nonPinnedTabs = persistentData.filter((tab) => !tab.isPinned)
 
-            const overflow = persistentData.slice(13).map((tab) => tab)
+            const visible = nonPinnedTabs.slice(0, 13)
+            const overflow = nonPinnedTabs.slice(13)
 
-            setPinnedTabs(persistentData.filter((tab) => tab.isPinned))
-            setVisibleTabs(visible.filter((tab) => !tab.isPinned))
-            setOverflowTabs(overflow.filter((tab) => !tab.isPinned))
+            setPinnedTabs(pinnedTabs)
+            setVisibleTabs(visible)
+            setOverflowTabs(overflow)
             setLoading(false)
          }
       }
 
       updateTabs()
-   }, [persistentData])
+   }, [
+      persistentData,
+      setVisibleTabs,
+      setPinnedTabs,
+      setLoading,
+      setOverflowTabs,
+   ])
+
+   useEffect(() => {
+      if (
+         pinsContainerRef.current &&
+         tabContainerRef.current &&
+         dropdownRef.current
+      ) {
+         const tabsContainerWidth = tabContainerRef.current.clientWidth
+         const pinsContainerWidth = pinsContainerRef.current.clientWidth
+         const dropdownWidth = dropdownRef.current.clientWidth
+         const totalWidth =
+            tabsContainerWidth - dropdownWidth - pinsContainerWidth
+
+         setContainerWidth(totalWidth)
+      }
+   }, [pinnedTabs, setContainerWidth])
 
    useEffect(() => {
       if (tabId) {
@@ -201,7 +229,7 @@ export default function TabContainer() {
                key={id}
                style={{
                   flex: overflowTabs.length > 0 ? "1 1 auto" : "0 1 auto",
-                  minWidth: "max-content",
+                  minWidth: 0,
                }}
                className="flex"
             >
@@ -241,16 +269,30 @@ export default function TabContainer() {
          onDragStart={handleDragStart}
          modifiers={[restrictToWindowEdges, restrictToHorizontalAxis]}
       >
-         <div className="flex w-full" ref={setNodeRef}>
+         <div
+            className="flex w-full"
+            ref={(el: HTMLDivElement) => {
+               setNodeRef(el)
+               tabContainerRef.current = el
+            }}
+         >
             {pinnedTabs.length > 0 && (
-               <TabPinnedContainer>{renderPinnedTabs()}</TabPinnedContainer>
+               <div ref={pinsContainerRef}>
+                  <TabPinnedContainer>{renderPinnedTabs()}</TabPinnedContainer>
+               </div>
             )}
             <SortableContext
                items={visibleTabs.map((tab) => tab.id)}
                strategy={horizontalListSortingStrategy}
             >
                {loading ? null : (
-                  <div id="tab-container" className="flex w-full">
+                  <div
+                     id="tab-container"
+                     className="flex w-full"
+                     style={{
+                        width: containerWidth ? containerWidth : "98%",
+                     }}
+                  >
                      {visibleTabs.length > 0
                         ? renderTabs(visibleTabs)
                         : renderTabs(persistentData)}
@@ -258,7 +300,7 @@ export default function TabContainer() {
                )}
             </SortableContext>
 
-            <TabDropdown overflowTabs={overflowTabs} />
+            <TabDropdown overflowTabs={overflowTabs} ref={dropdownRef} />
          </div>
 
          <TabOptionsMenu />
